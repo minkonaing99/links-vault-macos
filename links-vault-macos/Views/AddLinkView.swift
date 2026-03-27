@@ -20,10 +20,10 @@ struct AddLinkView: View {
                 SurfaceCard {
                     VStack(alignment: .leading, spacing: 14) {
 
-                        sectionHeader("Add a link", subtitle: "Tracking parameters are cleaned automatically.")
+                        FormSectionHeader(title: "Add a link", subtitle: "Tracking parameters are cleaned automatically.")
 
                         // URL row
-                        fieldGroup("URL") {
+                        FormFieldGroup("URL") {
                             HStack(spacing: 6) {
                                 TextField("https://example.com/article", text: $url)
                                     .textFieldStyle(.roundedBorder)
@@ -42,7 +42,7 @@ struct AddLinkView: View {
                         }
 
                         // Title
-                        fieldGroup("Title") {
+                        FormFieldGroup("Title") {
                             TextField("Optional title", text: $title)
                                 .textFieldStyle(.roundedBorder)
                                 .colorScheme(.dark)
@@ -50,7 +50,7 @@ struct AddLinkView: View {
 
                         // Date + Status in same row
                         HStack(alignment: .top, spacing: 12) {
-                            fieldGroup("Date") {
+                            FormFieldGroup("Date") {
                                 DatePicker("", selection: $date, displayedComponents: .date)
                                     .datePickerStyle(.compact)
                                     .labelsHidden()
@@ -58,7 +58,7 @@ struct AddLinkView: View {
                             }
                             .frame(maxWidth: .infinity, alignment: .leading)
 
-                            fieldGroup("Status") {
+                            FormFieldGroup("Status") {
                                 Picker("", selection: $status) {
                                     ForEach(LinkStatus.allCases) { s in
                                         Text(s.label).tag(s)
@@ -72,7 +72,7 @@ struct AddLinkView: View {
                         }
 
                         // Tags
-                        fieldGroup("Tags") {
+                        FormFieldGroup("Tags") {
                             TextField("security, cloud, certification", text: $tagsText)
                                 .textFieldStyle(.roundedBorder)
                                 .autocorrectionDisabled()
@@ -103,30 +103,6 @@ struct AddLinkView: View {
         }
         .appBackground()
         .navigationTitle("Add Link")
-    }
-
-    // MARK: - Subviews
-
-    private func sectionHeader(_ title: String, subtitle: String) -> some View {
-        VStack(alignment: .leading, spacing: 2) {
-            Text(title)
-                .font(.system(size: 14, weight: .semibold))
-                .foregroundStyle(Color.lvText)
-            Text(subtitle)
-                .font(.system(size: 12))
-                .foregroundStyle(Color.lvMuted)
-        }
-    }
-
-    private func fieldGroup<Content: View>(_ label: String, @ViewBuilder content: () -> Content) -> some View {
-        VStack(alignment: .leading, spacing: 5) {
-            Text(label)
-                .font(.system(size: 11, weight: .medium))
-                .foregroundStyle(Color.lvMuted)
-                .textCase(.uppercase)
-                .tracking(0.4)
-            content()
-        }
     }
 
     // MARK: - Actions
@@ -169,13 +145,14 @@ struct AddLinkView: View {
             setMessage("Enter a valid URL.", success: false)
             return
         }
+        if store.links.contains(where: { $0.url.lowercased().trimmingCharacters(in: CharacterSet(charactersIn: "/")) == urlString.lowercased().trimmingCharacters(in: CharacterSet(charactersIn: "/")) }) {
+            setMessage("This URL is already saved.", success: false)
+            return
+        }
         let tags = tagsText
             .split(separator: ",")
             .map { $0.trimmingCharacters(in: .whitespaces) }
             .filter { !$0.isEmpty }
-
-        let f = DateFormatter()
-        f.dateFormat = "yyyy-MM-dd"
 
         isSaving = true
         Task {
@@ -183,7 +160,7 @@ struct AddLinkView: View {
                 let body = CreateLinkRequest(
                     url: urlString,
                     title: title.isEmpty ? (URL(string: urlString)?.host ?? urlString) : title,
-                    date: f.string(from: date),
+                    date: DateFormatter.yyyyMMdd.string(from: date),
                     status: status.rawValue,
                     tags: tags,
                     pinned: false

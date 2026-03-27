@@ -56,6 +56,17 @@ struct MenuBarView: View {
                     .contentShape(Rectangle())
             }
             .buttonStyle(.plain)
+
+            Button(action: { NSApp.terminate(nil) }) {
+                Text("Quit")
+                    .font(.system(size: 12, weight: .medium))
+                    .foregroundStyle(Color.lvDanger)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(.horizontal, 12)
+                    .padding(.vertical, 8)
+                    .contentShape(Rectangle())
+            }
+            .buttonStyle(.plain)
         }
         .padding(.vertical, 6)
         .frame(width: 280)
@@ -72,13 +83,41 @@ struct MenuBarView: View {
     }
 
     private func linkRow(_ link: Link) -> some View {
+        LinkRowItem(link: link)
+    }
+
+    private func openMainWindow() {
+        let mainWindow = NSApp.windows.first { !($0 is NSPanel) && $0.canBecomeMain }
+        if let mainWindow {
+            mainWindow.makeKeyAndOrderFront(nil)
+        } else {
+            openWindow(id: "main")
+        }
+        NSApp.activate(ignoringOtherApps: true)
+    }
+}
+
+private struct LinkRowItem: View {
+    let link: Link
+    @Environment(\.openURL) private var openURL
+    @State private var isHovered = false
+
+    var body: some View {
         HStack(spacing: 6) {
-            Text(link.title)
-                .font(.system(size: 12))
-                .foregroundStyle(Color.lvText)
-                .lineLimit(1)
-                .truncationMode(.tail)
-                .frame(maxWidth: .infinity, alignment: .leading)
+            Button {
+                if let url = URL(string: link.url) {
+                    openURL(url)
+                }
+            } label: {
+                Text(link.title)
+                    .font(.system(size: 12))
+                    .foregroundStyle(isHovered ? Color.lvAccent : Color.lvText)
+                    .lineLimit(1)
+                    .truncationMode(.tail)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+            }
+            .buttonStyle(.plain)
+            .help(link.url)
 
             Button {
                 NSPasteboard.general.clearContents()
@@ -90,31 +129,10 @@ struct MenuBarView: View {
             }
             .buttonStyle(.plain)
             .help("Copy link")
-
-            Button {
-                if let url = URL(string: link.url) {
-                    openURL(url)
-                }
-            } label: {
-                Image(systemName: "arrow.up.right.square")
-                    .font(.system(size: 12))
-                    .foregroundStyle(Color.lvMuted)
-            }
-            .buttonStyle(.plain)
-            .help("Open in browser")
         }
         .padding(.horizontal, 12)
         .padding(.vertical, 7)
-    }
-
-    private func openMainWindow() {
-        let mainWindow = NSApp.windows.first { !($0 is NSPanel) && $0.canBecomeMain }
-        if let mainWindow {
-            mainWindow.makeKeyAndOrderFront(nil)
-        } else {
-            openWindow(id: "main")
-        }
-        NSApp.activate(ignoringOtherApps: true)
+        .onHover { isHovered = $0 }
     }
 }
 #endif

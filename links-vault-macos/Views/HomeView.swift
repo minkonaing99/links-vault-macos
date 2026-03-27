@@ -144,6 +144,11 @@ struct HomeView: View {
             quickAddSuccess = false
             return
         }
+        if store.links.contains(where: { $0.url.lowercased().trimmingCharacters(in: CharacterSet(charactersIn: "/")) == urlString.lowercased().trimmingCharacters(in: CharacterSet(charactersIn: "/")) }) {
+            quickAddMessage = "This URL is already saved."
+            quickAddSuccess = false
+            return
+        }
         isSaving = true
         quickAddMessage = ""
         Task {
@@ -152,12 +157,10 @@ struct HomeView: View {
                 if let fetched = try? await APIClient.shared.fetchTitle(url: urlString) {
                     resolvedTitle = fetched.title
                 }
-                let f = DateFormatter()
-                f.dateFormat = "yyyy-MM-dd"
                 let body = CreateLinkRequest(
                     url: urlString,
                     title: resolvedTitle,
-                    date: f.string(from: Date()),
+                    date: DateFormatter.yyyyMMdd.string(from: Date()),
                     status: "saved",
                     tags: [],
                     pinned: false

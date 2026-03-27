@@ -7,6 +7,10 @@ final class LinksStore {
     var isLoading = false
     var errorMessage: String? = nil
 
+    init() {
+        links = LinksCache.load()
+    }
+
     func fetchLinks(search: String? = nil, status: String? = nil) async {
         isLoading = true
         errorMessage = nil
@@ -14,6 +18,7 @@ final class LinksStore {
         do {
             let response = try await APIClient.shared.fetchLinks(search: search, status: status)
             links = response.links
+            persist()
         } catch {
             errorMessage = error.localizedDescription
         }
@@ -22,6 +27,7 @@ final class LinksStore {
     func createLink(_ body: CreateLinkRequest) async throws -> Link {
         let link = try await APIClient.shared.createLink(body)
         links = [link] + links
+        persist()
         return link
     }
 
@@ -30,6 +36,7 @@ final class LinksStore {
         do {
             let updated = try await APIClient.shared.updateLink(id: id, body)
             links = links.map { $0.id == id ? updated : $0 }
+            persist()
         } catch {
             links = snapshot
             throw error
@@ -51,6 +58,7 @@ final class LinksStore {
         do {
             let updated = try await APIClient.shared.updateLink(id: id, body)
             links = links.map { $0.id == id ? updated : $0 }
+            persist()
         } catch {
             links = links.map { $0.id == id ? link : $0 }
         }
@@ -61,12 +69,18 @@ final class LinksStore {
         links = links.filter { $0.id != id }
         do {
             try await APIClient.shared.deleteLink(id: id)
+            persist()
         } catch {
             links = snapshot
         }
     }
 
     var recent: [Link] {
-        Array(links.prefix(5))
+        Array(links.filter { !$0.pinned }.prefix(5))
+    }
+
+    private func persist() {
+        let snapshot = links
+        Task.detached(priority: .background) { LinksCache.save(snapshot) }
     }
 }

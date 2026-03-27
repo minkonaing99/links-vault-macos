@@ -55,6 +55,7 @@
 				D06914C12F766DFA00C04116 /* Sources */,
 				D06914C22F766DFA00C04116 /* Frameworks */,
 				D06914C32F766DFA00C04116 /* Resources */,
+				D06914FF2F766DFB00C04116 /* Rebuild AppIcon.icns */,
 			);
 			buildRules = (
 			);
@@ -113,6 +114,23 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		D06914FF2F766DFB00C04116 /* Rebuild AppIcon.icns */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Rebuild AppIcon.icns";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "ICONSET_SRC=\"${SRCROOT}/links-vault-macos/Assets.xcassets/AppIcon.appiconset\"\nTMPSET=\"${DERIVED_FILE_DIR}/AppIcon.iconset\"\nrm -rf \"$TMPSET\"\nmkdir -p \"$TMPSET\"\ncp \"$ICONSET_SRC/icon_16x16.png\"      \"$TMPSET/icon_16x16.png\"\ncp \"$ICONSET_SRC/icon_16x16@2x.png\"   \"$TMPSET/icon_16x16@2x.png\"\ncp \"$ICONSET_SRC/icon_32x32.png\"      \"$TMPSET/icon_32x32.png\"\ncp \"$ICONSET_SRC/icon_32x32@2x.png\"   \"$TMPSET/icon_32x32@2x.png\"\ncp \"$ICONSET_SRC/icon_128x128.png\"    \"$TMPSET/icon_128x128.png\"\ncp \"$ICONSET_SRC/icon_128x128@2x.png\" \"$TMPSET/icon_128x128@2x.png\"\ncp \"$ICONSET_SRC/icon_256x256.png\"    \"$TMPSET/icon_256x256.png\"\ncp \"$ICONSET_SRC/icon_256x256@2x.png\" \"$TMPSET/icon_256x256@2x.png\"\ncp \"$ICONSET_SRC/icon_512x512.png\"    \"$TMPSET/icon_512x512.png\"\ncp \"$ICONSET_SRC/icon_512x512@2x.png\" \"$TMPSET/icon_512x512@2x.png\"\niconutil -c icns \"$TMPSET\" -o \"${BUILT_PRODUCTS_DIR}/${WRAPPER_NAME}/Contents/Resources/AppIcon.icns\"\n/System/Library/Frameworks/CoreServices.framework/Versions/Current/Frameworks/LaunchServices.framework/Versions/Current/Support/lsregister -f \"${BUILT_PRODUCTS_DIR}/${WRAPPER_NAME}\"\n";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		D06914C12F766DFA00C04116 /* Sources */ = {
@@ -260,6 +278,8 @@
 				ENABLE_PREVIEWS = YES;
 				ENABLE_USER_SELECTED_FILES = readonly;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = LinksVault;
+				INFOPLIST_KEY_LSUIElement = YES;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -292,6 +312,8 @@
 				ENABLE_PREVIEWS = YES;
 				ENABLE_USER_SELECTED_FILES = readonly;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = LinksVault;
+				INFOPLIST_KEY_LSUIElement = YES;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",

@@ -1,7 +1,6 @@
 import SwiftUI
 
 struct ContentView: View {
-    @Environment(LinksStore.self) private var store
     @Binding var isLoggedIn: Bool
 
     var body: some View {

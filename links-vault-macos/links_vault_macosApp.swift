@@ -4,12 +4,14 @@ import SwiftUI
 struct links_vault_macosApp: App {
     @State private var store = LinksStore()
     @State private var isLoggedIn = false
+    @State private var networkMonitor = NetworkMonitor()
 
     var body: some Scene {
         #if os(macOS)
         WindowGroup(id: "main") {
             ContentView(isLoggedIn: $isLoggedIn)
                 .environment(store)
+                .environment(networkMonitor)
         }
         .defaultSize(width: 1040, height: 680)
         .commands {
@@ -25,6 +27,7 @@ struct links_vault_macosApp: App {
         WindowGroup {
             ContentView(isLoggedIn: $isLoggedIn)
                 .environment(store)
+                .environment(networkMonitor)
         }
         #endif
     }

@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
+  <defs>
+    <radialGradient id="bgGrad" cx="50%" cy="50%" r="60%">
+      <stop offset="0%" style="stop-color:#1a2332"/>
+      <stop offset="100%" style="stop-color:#0d1117"/>
+    </radialGradient>
+    <linearGradient id="ringGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#79c0ff"/>
+      <stop offset="100%" style="stop-color:#1f6feb"/>
+    </linearGradient>
+    <filter id="glow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="14" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <clipPath id="topHalf">
+      <rect x="0" y="0" width="1024" height="512"/>
+    </clipPath>
+    <clipPath id="bottomHalf">
+      <rect x="0" y="512" width="1024" height="512"/>
+    </clipPath>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1024" height="1024" fill="url(#bgGrad)"/>
+
+  <!-- Soft ambient glow -->
+  <ellipse cx="512" cy="512" rx="320" ry="220" fill="#58a6ff" opacity="0.06"/>
+
+  <!-- Right ring — bottom half first (goes BEHIND left ring) -->
+  <g clip-path="url(#bottomHalf)" filter="url(#glow)">
+    <ellipse cx="596" cy="512" rx="188" ry="126"
+             fill="none" stroke="url(#ringGrad)" stroke-width="72" stroke-linecap="round"/>
+  </g>
+
+  <!-- Left ring — full (sits on top of right ring's bottom) -->
+  <g filter="url(#glow)">
+    <ellipse cx="428" cy="512" rx="188" ry="126"
+             fill="none" stroke="url(#ringGrad)" stroke-width="72" stroke-linecap="round"/>
+  </g>
+
+  <!-- Right ring — top half (goes IN FRONT of left ring) -->
+  <g clip-path="url(#topHalf)" filter="url(#glow)">
+    <ellipse cx="596" cy="512" rx="188" ry="126"
+             fill="none" stroke="url(#ringGrad)" stroke-width="72" stroke-linecap="round"/>
+  </g>
+</svg>

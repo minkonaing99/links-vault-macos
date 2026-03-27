@@ -6,6 +6,7 @@ private enum NavSelection: Hashable {
 
 struct MainView: View {
     @Environment(LinksStore.self) private var store
+    @Environment(NetworkMonitor.self) private var networkMonitor
     @Binding var isLoggedIn: Bool
 
     #if os(macOS)
@@ -19,9 +20,32 @@ struct MainView: View {
         } detail: {
             detail
         }
+        .safeAreaInset(edge: .top, spacing: 0) {
+            offlineBanner
+        }
         #else
         iOSTabView
+            .safeAreaInset(edge: .top, spacing: 0) {
+                offlineBanner
+            }
         #endif
+    }
+
+    @ViewBuilder
+    private var offlineBanner: some View {
+        if !networkMonitor.isConnected {
+            HStack(spacing: 6) {
+                Image(systemName: "wifi.slash")
+                    .font(.system(size: 11))
+                Text("No internet connection")
+                    .font(.system(size: 12, weight: .medium))
+            }
+            .foregroundStyle(.white)
+            .padding(.horizontal, 12)
+            .padding(.vertical, 6)
+            .frame(maxWidth: .infinity)
+            .background(Color.lvDanger.opacity(0.9))
+        }
     }
 
     // MARK: - macOS
@@ -91,8 +115,10 @@ struct MainView: View {
     // MARK: - Actions
 
     private func logout() {
-        Task { await APIClient.shared.logout() }
-        isLoggedIn = false
+        Task {
+            await APIClient.shared.logout()
+            isLoggedIn = false
+        }
     }
 }
 

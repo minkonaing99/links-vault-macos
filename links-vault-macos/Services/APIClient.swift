@@ -121,7 +121,7 @@ actor APIClient {
 
     private func perform<T: Decodable>(_ request: URLRequest, retryOnUnauthorized: Bool = true) async throws -> T {
         let (data, response) = try await fetch(request)
-        let http = response as! HTTPURLResponse
+        guard let http = response as? HTTPURLResponse else { throw APIError.unknown(-1) }
 
         if http.statusCode == 401 && retryOnUnauthorized {
             try await refreshAccessToken()
@@ -139,7 +139,7 @@ actor APIClient {
 
     private func performVoid(_ request: URLRequest) async throws {
         let (data, response) = try await fetch(request)
-        let http = response as! HTTPURLResponse
+        guard let http = response as? HTTPURLResponse else { throw APIError.unknown(-1) }
         try checkStatus(http.statusCode, data: data)
     }
 

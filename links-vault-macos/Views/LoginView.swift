@@ -2,6 +2,7 @@ import SwiftUI
 
 struct LoginView: View {
     @Binding var isLoggedIn: Bool
+    @Environment(NetworkMonitor.self) private var networkMonitor
 
     @State private var username = ""
     @State private var password = ""
@@ -10,22 +11,26 @@ struct LoginView: View {
 
     var body: some View {
         ZStack {
-            // Background
-            ZStack {
-                Color.lvBackground
-                RadialGradient(
-                    colors: [Color.lvAccent.opacity(0.06), .clear],
-                    center: .topLeading,
-                    startRadius: 0,
-                    endRadius: 400
-                )
-            }
-            .ignoresSafeArea()
-
             card
                 .padding(24)
         }
         .frame(minWidth: 440, minHeight: 420)
+        .appBackground()
+        .safeAreaInset(edge: .top, spacing: 0) {
+            if !networkMonitor.isConnected {
+                HStack(spacing: 6) {
+                    Image(systemName: "wifi.slash")
+                        .font(.system(size: 11))
+                    Text("No internet connection")
+                        .font(.system(size: 12, weight: .medium))
+                }
+                .foregroundStyle(.white)
+                .padding(.horizontal, 12)
+                .padding(.vertical, 6)
+                .frame(maxWidth: .infinity)
+                .background(Color.lvDanger.opacity(0.9))
+            }
+        }
     }
 
     // MARK: - Card

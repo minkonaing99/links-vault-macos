@@ -2,7 +2,7 @@ import Foundation
 
 enum AppConfig {
     #if DEBUG
-    static let baseURL = URL(string: "http://localhost:3080")!
+    static let baseURL = URL(string: "https://links.merxy.club")!
     #else
     static let baseURL = URL(string: "https://links.merxy.club")!
     #endif

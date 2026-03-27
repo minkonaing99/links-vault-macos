@@ -256,9 +256,7 @@ struct BrowseView: View {
     }
 
     private func groupLabel(for date: String) -> String {
-        let f = DateFormatter()
-        f.dateFormat = "yyyy-MM-dd"
-        guard let d = f.date(from: date) else { return "Earlier · \(date)" }
+        guard let d = DateFormatter.yyyyMMdd.date(from: date) else { return "Earlier · \(date)" }
         if Calendar.current.isDateInToday(d) { return "Today" }
         if Calendar.current.isDateInYesterday(d) { return "Yesterday" }
         return "Earlier · \(date)"

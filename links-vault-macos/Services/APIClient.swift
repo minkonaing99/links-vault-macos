@@ -38,8 +38,8 @@ actor APIClient {
         let body = RefreshRequest(refreshToken: refreshToken)
         let req = try makeRequest(path: "/api/auth/refresh", method: "POST", body: body, auth: false)
         let response: TokenResponse = try await perform(req, retryOnUnauthorized: false)
-        try KeychainService.save(response.accessToken, for: KeychainService.Keys.accessToken)
-        try KeychainService.save(response.refreshToken, for: KeychainService.Keys.refreshToken)
+        KeychainService.save(response.accessToken, for: KeychainService.Keys.accessToken)
+        KeychainService.save(response.refreshToken, for: KeychainService.Keys.refreshToken)
     }
 
     func logout() async {

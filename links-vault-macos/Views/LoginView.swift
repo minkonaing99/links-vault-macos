@@ -122,8 +122,8 @@ struct LoginView: View {
         Task {
             do {
                 let response = try await APIClient.shared.login(username: username, password: password)
-                try KeychainService.save(response.accessToken, for: KeychainService.Keys.accessToken)
-                try KeychainService.save(response.refreshToken, for: KeychainService.Keys.refreshToken)
+                KeychainService.save(response.accessToken, for: KeychainService.Keys.accessToken)
+                KeychainService.save(response.refreshToken, for: KeychainService.Keys.refreshToken)
                 isLoggedIn = true
             } catch {
                 message = error.localizedDescription

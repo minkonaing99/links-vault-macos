@@ -5,7 +5,6 @@ import AppKit
 struct MenuBarView: View {
     @Environment(LinksStore.self) private var store
     @Binding var isLoggedIn: Bool
-    @Environment(\.openURL) private var openURL
     @Environment(\.openWindow) private var openWindow
 
     var body: some View {

@@ -1,5 +1,4 @@
 import SwiftUI
-import Foundation
 
 extension DateFormatter {
     static let yyyyMMdd: DateFormatter = {
